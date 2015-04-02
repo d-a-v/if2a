@@ -72,12 +72,14 @@ static int user_multiboot (const char* file)
 
 static int direct_write (const unsigned char* data, int base, int offset, int size, int blocksize, int first_offset, int overall_size)
 {
+	(void)data;
 	print("\t(template driver) direct_write(data, base=0x%x, offset=0x%x, size=0x%x, blocksize=0x%x, first_offset=0x%x, overall_size=0x%x)\n", base, offset, size, blocksize, first_offset, overall_size);
 	return 0;
 }
 
 static int read_ (unsigned char* data, int address, int size)
 {
+	(void)data;
 	print("\t(template driver) read(to_data, address=0x%x, size=0x%x)\n", address, size);
 	return 0;
 }

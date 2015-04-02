@@ -28,7 +28,7 @@ binware_s firmware	= { NULL, 0, NULL };
 binware_s multiboot	= { NULL, 0, NULL };
 binware_s splash	= { NULL, 0, NULL };
 
-cartio_s cartio = { 0, };
+cartio_s cartio = { .setup = 0, };
 
 const char* cart_type_str (cart_type_e cart_type)
 {

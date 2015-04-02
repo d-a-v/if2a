@@ -629,6 +629,8 @@ unsigned char* prepare_loadandwrite_sram (const char* file, int offset, int size
 	struct stat st;
 	unsigned char* sram = NULL;
 	
+	(void)offset; // not used, keep gcc quiet
+	
 	//XXXFIXME use buffer_from_file() here
 	
 	if (stat(file, &st) == -1)

@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
 	char *svd_file = NULL;
 
 	char *new_cart_size = NULL;
-	int non_opt_idx = 0;
+	//int non_opt_idx = 0;
 	int non_opt_nb = 0;
 
 	int enum_fw = 0;
@@ -413,7 +413,7 @@ int main(int argc, char *argv[])
 	while (opt != -1);
 
 	// optind now points to the first non-option of ARGV.
-	non_opt_idx = optind;
+	//non_opt_idx = optind;
 	non_opt_nb = argc - optind;
 
 	/* 

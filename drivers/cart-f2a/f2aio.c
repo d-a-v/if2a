@@ -132,7 +132,7 @@ cart_type_e f2a_get_type (int* size_mbits, int* write_block_size_log2, int* rom_
 			         "Using autodetection workaround.\n");
 			*size_mbits = 256;
 			sprintf(text, "F2A-256M pro%s[p!]", b_version? "-B": "  ");
-			for (i = 0; i < strlen(text); i++)
+			for (i = 0; i < (int)strlen(text); i++)
 				buffer[(i + shift) * 8 + 4] = (text[i] - ascshift) * 2;
 
 			// rewrite to OAM
@@ -260,7 +260,7 @@ int f2a_readmem (unsigned char* data, int address, int size)
 	if (f2a_write_msg(&sm) == -1)
 		return -1;
 	
-	for (i = 0; i < sm.size; i += SIZE_1K)
+	for (i = 0; i < (int)sm.size; i += SIZE_1K)
 	{
 		if (f2a_read(data, SIZE_1K) == -1)
 			return -1;

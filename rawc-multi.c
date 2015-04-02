@@ -231,8 +231,7 @@ int main (int argc, char* argv[])
 		snprintf(temp, LEN, "\t{ \"%s\", %s, %s },\n", binname, defnamelen, defname);
 		strcat(decl, temp);
 	}
-	fprintf(fc, decl);
-	fprintf(fc, "\t{ NULL, 0, NULL }\n};\n\n");
+	fprintf(fc, "%s\t{ NULL, 0, NULL }\n};\n\n", decl);
 
 	fclose(fc);
 

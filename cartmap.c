@@ -252,8 +252,8 @@ void display_cart_map_ptr (cart_map_s* cart_map, int cart_map_number, int map_ha
 	{
 		cart_map_s* item = &cart_map[i];
 		
-		assert(next_addr <= item->offset);
-		if (next_addr < item->offset)
+		assert(next_addr <= (int)item->offset);
+		if (next_addr < (int)item->offset)
 			print("\t#%02i- --- empty --- - offset=0x%x=%.4gMb - size=0x%x=%.4gMb - last=0x%x=%.4gMb\n",
 				j,
 				next_addr,
@@ -405,7 +405,7 @@ int cart_map_build_hole (void)
 	
 	assert(cart_map_max_number >= MAP_MINIMUM_ENTRIES);
 	
-	if (loader_and_cart_map_size == sizeof(cart_map_s) * cart_map_max_number && !new_loader)
+	if (loader_and_cart_map_size == (int)sizeof(cart_map_s) * cart_map_max_number && !new_loader)
 	{
 		printerr("When creating a map, a loader must be specified.\n");
 		return -1;
@@ -429,8 +429,8 @@ int cart_map_build_hole (void)
 			continue;
 	
 		// new data, check if it is contiguous to previous one
-		assert(cart_map[cart_map_index].offset >= test_hole_offset);
-		if (cart_map[cart_map_index].offset > test_hole_offset)
+		assert((int)cart_map[cart_map_index].offset >= test_hole_offset);
+		if ((int)cart_map[cart_map_index].offset > test_hole_offset)
 		{
 			// it is not, so we have crossed a hole
 			cart_map_hole[cart_map_hole_number].offset = test_hole_offset;
@@ -459,7 +459,7 @@ int cart_map_build_hole (void)
 		
 		// max size for loader
 		max_size = loader_and_cart_map_size;
-		if (cart_map_hole_number && cart_map_hole[0].offset == loader_and_cart_map_size)
+		if (cart_map_hole_number && (int)cart_map_hole[0].offset == loader_and_cart_map_size)
 			max_size += cart_map_hole[0].size;
 		// calculate trimmed size
 		new_loader_trimmed_size = trim(new_loader->data, new_loader->size);
@@ -511,14 +511,14 @@ int cart_map_build_hole (void)
 		{
 
 			// first hole right after old map
-			if (cart_map_hole_number && cart_map_hole[0].offset == loader_and_cart_map_size)
+			if (cart_map_hole_number && (int)cart_map_hole[0].offset == loader_and_cart_map_size)
 			{
 				if (cart_verbose > 0)
 					print("\tadjusting first hole\n");
 				// change its size (grow or reduce)
 				cart_map_hole[0].offset += new_loader_and_cart_map_size - loader_and_cart_map_size;
 				cart_map_hole[0].size -= new_loader_and_cart_map_size - loader_and_cart_map_size;
-				assert(cart_map_hole[0].size >= 0);
+				assert((int)cart_map_hole[0].size >= 0);
 				// if the first hole is now null-sized, we simply remove it
 				if (cart_map_hole[0].size == 0)
 					memmove(&cart_map_hole[0], &cart_map_hole[1], --cart_map_hole_number * sizeof(cart_map_s));
@@ -658,7 +658,7 @@ static void cart_map_file_find_best_insertion_recursive (const int cart_map_file
 			cart_map_hole_remaining_size[cart_map_file[cart_map_file_index].hole_index_test] += cart_map_file[cart_map_file_index].size;
 			
 			// sanity check
-			assert(cart_map_hole_remaining_size[cart_map_file[cart_map_file_index].hole_index_test] <= cart_map_hole[cart_map_file[cart_map_file_index].hole_index_test].size);
+			assert(cart_map_hole_remaining_size[cart_map_file[cart_map_file_index].hole_index_test] <= (int)cart_map_hole[cart_map_file[cart_map_file_index].hole_index_test].size);
 		}
 	}
 }
@@ -913,9 +913,9 @@ int burn_map_chunk (int burn_map_file_index_start, int burn_map_file_index_end)
 		// locate the locator
 		locator_offset_in_chunk = burn_cart_map_location + (burn_cart_map_max_number * sizeof(cart_map_s)) - burn_chunk_offset;
 		if (burn_map_file_index_end == 0)
-			assert(locator_offset_in_chunk + burn_chunk_offset - change_chunk_offset + sizeof(cart_map_locator_s) == change_chunk_size);
+			assert(locator_offset_in_chunk + burn_chunk_offset - change_chunk_offset + (int)sizeof(cart_map_locator_s) == change_chunk_size);
 		else
-			assert(locator_offset_in_chunk + burn_chunk_offset - change_chunk_offset + sizeof(cart_map_locator_s) < change_chunk_size);
+			assert(locator_offset_in_chunk + burn_chunk_offset - change_chunk_offset + (int)sizeof(cart_map_locator_s) < change_chunk_size);
 		burn_cart_map_locator = (cart_map_locator_s*)&chunkrom[locator_offset_in_chunk];
 	
 		// copy map but skip loader, we don't want it in map
@@ -940,7 +940,7 @@ int burn_map_chunk (int burn_map_file_index_start, int burn_map_file_index_end)
 		if (size_to_load > item->size)
 			size_to_load = item->size;
 		assert(size_to_load > 0);
-		if (load_from_file(item->filename, &chunkrom[item->offset - burn_chunk_offset], &size_to_load) < 0)
+		if (load_from_file(item->filename, &chunkrom[item->offset - burn_chunk_offset], &size_to_load) == NULL)
 		{
 			free(chunkrom);
 			return -1;
@@ -1092,7 +1092,7 @@ int cart_map_process_changes (void)
 			// then we had nothing to put at this hole_offset).
 			
 			if (   cart_map_hole_index >= cart_map_hole_number
-			    || hole_offset <= cart_map[cart_map_index].offset)
+			    || hole_offset <= (int)cart_map[cart_map_index].offset)
 			{
 				// then we have to blow this cart rom header out of our way
 				

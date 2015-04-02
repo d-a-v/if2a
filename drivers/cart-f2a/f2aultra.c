@@ -23,7 +23,7 @@ static void content_descriptor_convertion_from_cart (content_desc* d)
 {
 	if (!is_littleendian_host())
 	{
-		int i;
+		unsigned int i;
 		
 		#define C32(x) { d->x = swap32(d->x); }
 	
@@ -176,6 +176,7 @@ int f2au_DH_to_file(const char* file)
 
 int f2au_DH_from_file(const char* file)
 {
+	(void)file;
 	return 0;
 }
 
@@ -273,6 +274,7 @@ int f2au_CD_print(content_desc* desc)
 
 int f2au_CD_check(content_desc* desc)
 {
+	(void)desc;
 	return 0;
 }
 
