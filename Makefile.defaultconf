@@ -13,13 +13,13 @@
 F2AUSBLINKER	= 1
 
 # F2A USB Writer
-F2AUSBWRITER	= 1
+F2AUSBWRITER	= 0
 
 # F2A Parallel Linker
 F2APARLINKER	= 0
 
 # EFA USB Linker
-EFALINKER	= 1
+EFALINKER	= 0
 
 ######################################
 # uncomment and/or configure as needed
@@ -41,7 +41,7 @@ LIBUSBPATH_OSX		?= ./libusb-0.1.10a
 LIBUSBPATH_UNIX 	?= ./libusb-0.1.10a
 
 # some flags
-CFLAGS		+= -O0 -g -Wall
+CFLAGS		+= -O0 -g -Wall -Wextra
 LDFLAGS		+=
 
 # compiler

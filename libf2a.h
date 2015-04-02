@@ -8,7 +8,7 @@
 #ifndef __LIBF2A_H__
 #define __LIBF2A_H__
 
-#define VERSION			"0.94.4"
+#define VERSION			"0.94.5"
 
 #if _WIN32
 	#include <windows.h>

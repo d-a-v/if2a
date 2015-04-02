@@ -1,5 +1,4 @@
-# if2a Makefile (C) D. Gauchard <deyv@free.fr>
-# Licensed under the terms of the GNU Public License version 2
+# if2a Makefile
 
 # Makefile.default is included by default
 # if it does not exist, then Makefile.defaultconf will be tried.
@@ -248,7 +247,7 @@ rawc-multi.o: rawc-multi.c
 B		= binware
 BINWARE		= $(B).c $(B).h
 
-$(BINWARE): rawc-multi$(HOSTEXT) $(shell echo binware/*.{hex,gba,mb,img})
+$(BINWARE): rawc-multi$(HOSTEXT) binware/*.hex binware/*.gba binware/*.mb binware/*.img
 	@echo "Building $(B)..."
 	@rm -f $(BINWARE)
 ifeq ($(POGO),1)
@@ -338,8 +337,8 @@ sources: distclean subsources
 dep: .depends
 
 clean:
-	rm -f {.,*/*}/*.o
+	rm -f *.o */*/*.o
 
 distclean: clean
-	rm -f .depends $(BINWARE) libf2a.a {rawc-multi,if2a,iefa}{,.exe} doc/FAQWTO.{html,txt}
-	@rm -f {.,*/*}/*~ DEADJOE
+	rm -f .depends $(BINWARE) libf2a.a rawc-multi if2a iefa doc/FAQWTO.html doc/FAQWTO.txt
+	@rm -f *~ */*/*~ DEADJOE
