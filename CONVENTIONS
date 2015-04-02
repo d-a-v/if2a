@@ -1,0 +1,39 @@
+This file details conventions that have to be enforced within if2a so that working
+on shared code can be achieved less painfully.
+
+1. Headers
+----------
+Each C file has its corresponding header that gets the same name as the C file.
+Each C file includes the headers it needs (and only these ones). 
+No header inclusion is allowed within a header except when definitions _INSIDE_ 
+the header need external includes.
+In the list of includes, the header corresponding to the source file must be the 
+first, then the others.
+
+2. Documentation
+----------------
+Each function should be documented in its header so that it is easy to figure 
+out what the function does without having to look at the source
+
+3. Naming conventions (in the works)
+------------------------------------
+Filenames all get the f2a prefix.
+Use appropriate prefixes for functions (e.g. f2au_ for Ultra functions). 
+Notation should be : prefix_objectOfOperation_operation e.g f2au_CD_read for a 
+function that operates on the Content Descriptor and reads its contents.
+
+4. I/Os
+-------
+Prefer the use of functions that work on buffers. You can then translate these 
+buffers to file or get buffers from files using the functions from f2autils.h
+
+5. Comments
+-----------
+Multi-line comments should use the '/* */' as shown :
+/*
+ * This is a multi-line comment
+ * Notice how each line starts with a star
+ */
+ 
+Single-line comment use the '//' convention :
+// This is a single line comment

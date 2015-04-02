@@ -1,0 +1,113 @@
+# if2a Makefile (C) D. Gauchard <deyv@free.fr>
+# Licensed under the terms of the GNU Public License version 2
+
+# Makefile.default is included by default
+# if it does not exist, then Makefile.defaultconf will be tried.
+# If you need to adjust the default conf, please copy Makefile.defaultconf
+# to Makefile.default then edit it.
+
+######################################
+# uncomment and/or configure as needed
+
+# F2A USB Linker
+F2AUSBLINKER	= 1
+
+# F2A USB Writer
+F2AUSBWRITER	= 1
+
+# F2A Parallel Linker
+F2APARLINKER	= 0
+
+# EFA USB Linker
+EFALINKER	= 1
+
+######################################
+# uncomment and/or configure as needed
+
+# memory debug
+#LDFLAGS 	+= -lefence # don't forget 'export EF_ALLOW_MALLOC_0=1' in shell (propably a bug in libusb)
+#LINKDEBUG	= ccmalloc
+
+# static linking is good for distributed binaries
+STATIC	 	= 1
+
+### libusb search path 
+#win32
+LIBUSBPATH_WIN32	?= ./libusb-win32-bin-0.1.8.0
+#LIBUSBPATH_WIN32	?= ./libusb-win32-bin-0.1.10.1
+# OSX
+LIBUSBPATH_OSX		?= ./libusb-0.1.10a
+# other unices
+LIBUSBPATH_UNIX 	?= ./libusb-0.1.10a
+
+# some flags
+CFLAGS		+= -O0 -g -Wall
+LDFLAGS		+=
+
+# compiler
+CC		?= gcc
+AR		?= ar
+ARFLAGS		= rcs
+STRIP		?= strip
+
+# cross win32 compiler
+CROSSWIN32CC		?= i586-mingw32msvc-gcc
+CROSSWIN32AR		?= i586-mingw32msvc-ar
+CROSSWIN32STRIP		?= i586-mingw32msvc-strip
+CROSSWIN32HOSTCC	?= gcc
+
+######################################
+# internal files configuration
+# for each line, first file is default
+# 
+# the same file can be used more than once (may be useful for loaders). from
+# the second time, add "./" in the beginning of the filename so that binary
+# data are not twice included in binwares.
+
+POGOLOADER	= loader-pogo-lite.gba
+POGO		= 0
+
+#################
+#################
+## Flash2Advance
+
+#################
+# F2A usb linker
+ifeq ($(F2AUSBLINKER),1)
+F2ACOMMON	= 1
+
+F2A-LNK-FIRM	= firmware-f2a-usb-linker-v2.3u.hex
+F2A-LNK-MB	= multiboot-f2a-usb-v2.4b.mb multiboot-f2a-usb-v2.6bU.mb
+F2A-LNK-SPLASH	= splash-f2a-usb-linker-gundam.img
+
+endif # F2AUSBLINKER
+
+#################
+# F2A usb writer
+ifeq ($(F2AUSBWRITER),1)
+F2ACOMMON	= 1
+
+F2A-WRT-FIRM	= firmware-f2a-usb-writer-v0.hex
+
+endif # F2AUSBLINKER
+
+#############
+# F2A common
+ifeq ($(F2ACOMMON),1)
+
+POGO		= 1
+F2A-LDR-PRO	= ./loader-pogo-lite.gba # loader-pro-GBA_Loader32.gba loader-pro-GBA_Loader33.gba
+F2A-LDR-ULTRA	= loader-ultra-WINF2A270.gba ./loader-pogo-lite.gba # loader-ultra-WINF2A260.gba
+
+endif # F2A
+
+#########################
+#########################
+## Extreme Flash Advance
+ifeq ($(EFALINKER),1)
+
+POGO		= 1
+EFA-USB-FIRM	= firmware-efa-usb-v0.hex
+EFA-LDR		= ./loader-pogo-lite.gba
+
+endif # EFALINKER

@@ -1,0 +1,47 @@
+Bugs:
+-----
+
++ ./if2a -t U -v -d -R @ . . . just hangs ...
++ if no cart type specified, if2a loads mb img before telling you. Should be immediate.
+
+Improvements:
+-------------
+
++ Ultra support
+  + Assembler/dissassembler for global SVD file (insert/remove individual slots)
+  + Die Hard : R/W support, ROM patching
+  + Reorder ROMS in CIZ list
+
++ Nice to have
+  + Zipped ROM support
+  + Real ROM header check and correction (checksum fields to add)
+  + GTK frontend
+
++ Platform support
+  + automake/autoconf
+
++ Code cleaning
+  + Provide general I/O functions (in progress)
+  + Naming conventions (in progress)
+  + Function headers for doc
+
++ Documentation
+  + Everything under Doxygen (even README, CHANGELOG, etc)
+
++ GBA-specific
+  + PocketNES/Goomba ROM builder
+ 
++ Functionalities 
+  + try win32burner with loader33 [DOES NOT WORK!]
+  + check all return values and print messages
+  + try to improve -C option
+
+Others:
+------- 
+
++ Remove dump/analysis of CD from main code and put that in a script
++ Redo LogAnalyze and LogPurify in one Perl script. Add binary extraction abilities
++ PROTOCOL:
+  + Add general information about commands
+  + Memory layout section
+

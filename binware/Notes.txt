@@ -1,0 +1,16 @@
+F2A USB Firmwares:
+------------------
+firmware-f2a-usb-linker*hex:
+	USB firmwares are the same for both Powerwriter 2.3 and 2.4. This is the
+	reason why there is no 2.4 firmware here.
+firmware-f2a-usb-writer-v0.hex:
+	Got from Cory snoops (see credits in faqwto)
+
+F2A-pro PogoShell:
+------------------
+	loader-pogo-lite is a small sized pogoshell-2.0b4 (no emu, no music, no background, one font).
+
+EFA USB Firmware:
+-----------------
+firmware-efa-usb-v0.hex:
+	Got from pipomolo42 at bigbugsite.free.fr/efa/

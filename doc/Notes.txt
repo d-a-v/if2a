@@ -1,0 +1,520 @@
+29/09/04
+--------
+
+usbsnoop 1.8 and Win98. Had problem since log files overwrite each other. Can
+only select one periph at a time.
+Got ez-usb firmware with the first device : EZ-USB for F2A.
+
+30/09/04
+--------
+
+Done :
++ Extracted MB image from PW2.30 exe (GBA Pack is old loader).
+Steps :
+1. Select interesting parts of exe (big N logo for beginning of ROM [sample from
+PD ROM/WinF2A], end = new ROM).
+2. Export as hexdump with frhed.
+3. Cut out overdump at beginning and end of ROM.
+4. Sed magic (s/......  \(.*\)/\1/) to remove addresses. Otherwise -> 16MBytes
+ROM !
+5. xxd feed with -r and -p flag (-p to feed hexdump with no line/addr info).
+
++ Logged actions of PW2.30 : multiboot, cart listing, SVD backup, SRAM backup
++ Extracted EZ-USB firmware.
+Steps :
+1. Purify usbsnoop log with text editor.
+2. Sed magic to remove addresses (s/.*: \(.*\)/\1/)
+3. Convert to binary with xxd (-r -p flags)
+4. Translate to ihex with objcopy (-I binary -O ihex options)
+
++ Checked that new firmware and MB image work: they do! Maker code is not always
+zero anymore 
+and cart is correctly recognized as Ultra.
++ Read source.
+
+HighL :
++ xxd smart about under/overdumps. No need to convert to Unix line endings
+(beware : Cygwin).
+
+LowL :
++ frhed crashes when attempting to export as hexdump with only digits (and not
+entire display) hence sed trick.
++ frhed exports only complete lines.
+
+Next steps :
++ SRAM read/write
++ SVD read write
+
+01/10/04
+--------
+
+Done:
++ Wrote sed/awk black magic to purify and analyze usbsnoop logs. Will ease work
+a lot !  Combination of scripts keeps only interesting parts, extract data from
+hex dumps and pretty-prints it.
++ Began to only retain specific parts of logs for command matching
+
+Next steps:
++ More logging to do with Win32 software
++ SRAM and SVD R/W
+
+02/10/04
+--------
+
+Done:
++ Added "unknown" field pattern recognition in LogAnalyze
++ Logged almost all win32 soft modes : SVD R/W, SRAM R/W, DH R/W, Multiboot,
+Hide/Unhide, Backup ROMS
++ Understood what write after MB was for : background image of loader
++ Extracted default (Gundam) background image
++ Added preliminary support for background image. Image loads but soft hangs
++ Began to describe protocol
+
+HighL:
++ No need to extract specific log parts since a grep for command headers is
+sufficient 
++ binMode on LogAnalyze and sed -> easy to extract binaries
+
+LowL:
++ None
+
+Next :
++ Fix background image loading (add getStatus cmd)
++ Complete protocol description
++ Think about a terminal app to talk with F2A (cf robots)
+
+04/10/04
+--------
+
+Done :
++ Struggled with hex to dec conversion with sprintf. Does not work. Was to
+convert hexa block sizes into decimal.
+
+Next:
++ Solve conversion problem
++ Detail protocol
+
+05/10/04
+--------
+
+Done :
++ Successful conversion from hexa to decimal using function from comp.lang.awk
+ng. Uses index and substr.
++ Added new pattern recognition for addresses : Video RAM
++ Played with usb-robot with little success. Seems there is a pb with param
+size
+
+Next:
++ Detail protocol
+
+06/10/04
+--------
+
+Done:
++ Mailed usb-robot maintainer about problem
+
+07/10/04
+--------
+
+Done:
++ Fixed background image loading. Need not wait for reply from F2A after
+download. Still to figure out why it is needed after multiboot image (!=logs)
++ Read usb-robot-code. Interface == endpoint. Tried with that : no luck. Still
+no reply from maintainer
+
+08/10/04
+--------
+
+Done:
++ Dropped usb-robot since no reply came from maintainer
++ Completely rewrote PROTOCOL file, now a reference on F2A inners.
++ Logged forgotten actions : write SVD and write SRAM
++ Studied SVDs dumps and content descriptors
+
+Next:
++ Begin implementation
+
+09/10/04
+--------
+
+Done:
++ Read source and began to put in observations about Ultra (tag is ULTRA)
++ Tried to give authorizations for non-root users : work only for downloading
+to the board, not for USB manipulations -> need for sudo package.
++ Rewrote background image support, added new PROTOCOL info.
++ Indentified bug in SRAM R/W : it's possible to not specify any SRAM block
+hence leaving offset and size uninitialized.
++ Added size of read/written data for SRAM.
++ Successfully tested SRAM support for Ultra (offset = 0, size = 131072).
+
+11/10/04
+--------
+
+Done:
++ Added support for cart types. New mandatory option -t (U, P, T types).
+Making option mandatory is easier to manage and less error-prone
++ Corrected SRAM R/W bug.
++ Added Ultra SRAM R/W support.
++ Tested with SVD R/W. Despite a total size of 320K, reading SVD at once does
+not seem to work. Maybe PW is processing file after reading it?
++ Thought about binMode=4 where all dumps would be processed by xxd and
+reinserted into log.
+
+13/10/04
+--------
+
+Done:
++ Checked for SVD. Hexdump from sniffs and from PW file are the same -> no
+processing is done after gathering data from F2A.
++ Added SVD read support. 3 reads are mandatory. Function can be adapted for
+DH.
+
+14/10/04
+--------
+
+Done:
++ Tested SVD read and diffed with binary from PW : perfect !
++ Added DH read from PROTOCOL. There really are 5 reads and a total of 388K
+on bus but final dump weights only 108K. Processing must be done by PW. May be
+some compression but zipping if2a DH backup produces a 276K file, far bigger
+than PW dump...
++ Reorganized help screen and changed help to not print on stderr (cannot be
+piped)
++ Reworked options, modes and error checking. New help screen, much clearer
+now
+
+15/10/04
+--------
+
+Done:
++ Removed help about Die Hard options. Will be for next release.
++ Installed and played with source navigator.
++ Added SVD write support (layout is here for DH as well). Tested : works!
++ Corrected pb about mode being tested as a boolean (if mode) whereas it is
+an int (if mode == MODE_READ). Was preventing MODE_READ to work.
+
+
+16/10/04
+--------
+
+Done:
++ Fix for only displaying 1 byte (out of 2) of maker code.
++ Reworked whole Makefile to include all binaries and pass according
+defines at compilation
++ Added dynamic loader/background image change depending on cart type.
+
+17/10/04
+--------
+
+Done:
++ Reworked README. Added special filenames for ROM reading in help. Corrected
+bug with -R and -W options (target_rom not set).
++ Nasty behaviour of PW : seems that for each ROM backup, WINF2A is included !
+Lost couple of hours trying to figure out what was wrong... In fact, backups
+are always done from ROM base up to amount specified : impossible to backup
+only last ROM!
++ Corrected bug about wrong ROM header checking : 4 first bytes must not be
+checked because this is a branch instruction and can then freely differ.
++ Tweak on display (burning addresses instead of only offsets, etc)
++ Changed writeblocksize to 32KB to be able to trim even small ROMS.
++ Write support is OK except for content descriptor : needs to be written
+as well. Otherwise, ROMS are still visible and CIZ branches to empty areas...
+
+19/10/04
+--------
+
+Done:
++ Logged different cfg of ROMS of cart and dumped Content Descriptors
+
+21/10/04
+--------
+
+Done:
++ Redid CD dumps with -g1 (to fit in -y diff)
++ Looked at bins and compared.
++ Added CD R/W commands (-k/-K options)
++ Played with content descriptor
+
+22/10/04
+--------
+
+Done:
++ Logged enormous amounts of descriptors
++ Began to reverse ROM entries of CD (found list ID, CIZ ID, hide/recycle
+field, index, nb of hidden ROMS)
+
+23/10/04
+--------
+
+Done :
++ Logged other descriptors
++ Continued reverse (found ROM size, language, saver type, last played ROM)
+
+27/10/04
+--------
+
+Done:
++ Began to gather info about Zip support. Unzip sources are good and provide
+APIs for C access.
++ Posted on GBATemp, gbadev, PocketHeaven and Emuboards about CIZ ID
+generation
++ Looked for unknown fields : no luck
++ Began to write down cd struct definition : 38 bytes difference from dump ...
+
+28/10/04
+--------
+
+Done :
++ Corrected and finished cd struct definition along with rom entry struct
++ Investigated CIZ ID generation : seems to be CRC on header
++ Found ROM CRC field in CD
++ Played with writing dummy CDs and dumping generated CDs
+
+25/11/04
+--------
+
+Done:
++ Project put under CVS (CVSROOT=:pserver:vincent@grotte.homelinux.net:80/home/cvs) 
+as we will work together with David. Yahoo !
++ Corrected a bug with missing break statements in option processing (did ROM
+dump as well as SRAM dump when SRAM dump was requested)
++ GameID generation was cracked : it's a CRC on the first 180 bytes of the
+header + checksum byte
++ Added content descriptor structure to PROTOCOL file
++ Wrote CD ROM entry structure in f2a.h
+
+26/11/04
+--------
+
+Done:
++ Added error case in case user specifies SVD/CD with non-Ultra cart
++ Wrote CD structure
++ Added GameID generation routine based on crc32.c file. However, it seems the
+poly is no the correct one
+
+
+29/11/04
+--------
+
+Done:
++ Completed GameID generation! Poly was correct, just wrong indices for header
+(188 vs 189). Struggled as well because of locality of C variables...
++ Optimized generate_game_id function : no need for intermediate rom variable.
+
+
+30/11/04
+--------
+
+Done:
++ Added CD read function that parses CD dumps and outputs info using CD
+structure
++ Corrected ROM entry and CD structs
+
+
+01/12/04
+--------
+
+Done:
++ Corrected problem with 2.4 kernels : usb_reset() made the device disconnect.
+Commited by david
+
+
+02/12/04
+--------
+
+Done:
++ Updated TODOs
++ Updated PROTOCOL with terminology
++ Read Zhevon's svdedit source
+
+
+06/12/04
+--------
+
+Done:
++ Added utility functions to get buffer from filename and to hexprint contents
+of arrays and reworked functions game_id_gen and cd_print
++ Still need to correct print_hex_array because of incorrect (ffffffff instead
+of ffffffff) printing
+
+
+08/12/04
+--------
+David:
+Tagged latest cvs version with "if2a-v04"
+Much work done since some days:
+- all f2a input/output functions (boot.c info.c readmem.c writemem.c) gone into
+  f2aio.c
+- all binary files have gone into binware/
+- replaced rawc.c by rawc-multi.c to manage binware files
+- added f2autils.c containing binware management and some other useful functions
+  moved from other files
+- renamed some functions and variables (f2a_, F2A_) (more to do)
+- moved useless info for if2a.c from f2a.h to f2a-internal.h
+- moved ultra functions from if2a.c to f2aultra.c (more to do)
+- use standard(?) type u_int32_t for 4 bytes integers in structures
+- completely rewrote Makefile (binware, libf2a.a, clean dependancies...)
+- replaced all printf/fprintf/perror by print/printerr/printerrno in libf2a
+  (they can be redirected for other use of libf2a - xf2a ;-)
+- added if2a options to load alternate internal files (binware) or external
+  files
+- changed version to 0.90 (why, why not... one can move back nothing's released
+  yet ;-)
+- maybe more, to the good of our great f2a
+
+Vince
++ Added buffer_to_file utility function
++ Completed content descriptor print function. Now displays CD fields other
+than ROM entries ones.
++ Added new options in if2a help
++ Added function (bogus atm ) to check for CD validity
++ Made Ultra functions naming convention compliant (f2au_ prefix)
++ Reworked and unified CD read functions. Still needs work on argument
+processing, esp. for -D that has an optional argument
+
+
+14/12/04 (preparating for release tomorrow)
+--------
+
+Done:
++ Commented on argument processing following David's help on -D option : we
+are definitely duplicating the work of getopt. Need to add ':' on necessary
+option letters and remove clumsy code around the 'File name missing test'
++ Documented -e and -E options
++ Tested functions :
+  - SRAM R/W is OK
+  - SVD R/W is OK (pb on write may be Zelda-related)
+  - CD dump and analyzing functions are OK
+  - CD write OK
+  - not tested Die Hard functions
+  - if2a-static OK
++ Reverted back array_print function since David broke everything up :)
++ Updated PROTOCOL with SVD erase info
++ Split README into README and CHANGELOG
++ Added outdating notice to README
++ Created Sniffs-HOWTO to explain how to use LogAnalyze and LogPurify
+
+
+20/12/04
+--------
+
+Done:
++ Worked on PW2.40 : extracted new multiboot image, added new sniffs
++ Found multiboot image test menu using Select + B!
++ Created new CART_TYPES file with info from my cart inside
++ Updated PROTOCOL for booting procedure.
++ Updated Sniffs-HOWTO with gory details on how to extract a binary
++ Modified USB timeout (2x) as writes were impossible otherwise
++ Tested writing a single ROM without loader : no pb on EEPROM save type
+
+
+21/12/04
+--------
+
+Done:
++ Removed one 2.40 sniff as it was taking too much space
++ Extracted 2.40 USB firmware : same as 2.30 except for padding at the end.
++ Extracted 2.40 CIZ : same as 2.30
++ Removed obsolete entries about Ultra memory areas in f2a.h
++ Reverted back to write block size of 128KB as shown by mb img test menu :
+this was causing problems ('serious error')
++ Studied how if2a and PW differ in their writing : PW always reserves 256KB
+for the loader, even if it is smaller
++ Updated PROTOCOL and CHANGELOG
+
+06/01/05 - if2a-0.92b
+---------------------
+
+David:
++ Tagged latest cvs version with "if2a-before-ansi" (between v0.92a & v0.92b)
+Code rework:
++ Porting to ansi-c (using fopen/fread/fwrite/fclose/fseek intead of
+open/read/write/close/lseek) 
++ Moved stuff from if2a.c to f2aio.c (namely f2a_burn (was burnrom))
++ Start of code simplification (see f2aio.c:f2a_multiboot)
++ automatic arch Makefile
++ Compilation still not tested under gcc-mingw - too late :(
++ Tested to work under linux (further tests to be done though)
+
+07/01/05
+--------
+
+David:
+Code rework:
++ improved porting
++ now things work both under cygwin and win32
++ corrected romblocksize bug (appeared in last commit)
++ preliminary tests under linux (I need help!)
++ --> changed all printf/fprintf by print/printerr into if2a.c <--
+  reason: "\n" does not flush under pure win32 (fflush() added in print/printerr
+  under pure win32)
+
+29/01/05 and 30/01/05
+---------------------
+
+Done:
++ Implemented rudimentary way of supporting several ROMS on Ultra carts : we
+are blanking out the CD after having written to the cart.
++ Updated PROTOCOL about CD CRC and checks
++ Updated CHANGELOG
++ Added CONVENTIONS file
++ Moved some TODOs from CODE into TODO file
++ Removed old f2a file as we only support if2a now.
++ Enforced code conventions by MASSIVE code cleanups:
+  - split up cart functions in f2acarts.c
+  - put global settings in if2a.h. Reworked them to be externals
+  - removed crc32.c. Put crc function in f2autils.c
+  - enforced formatting conventions (line endings and comments)
+  - created headers corresponding to each source file (much sticter checks
+    now)
+  - created global header (topheader.h) containing system includes
+  - removed infamous f2a-internal.h and put relevant functions in f2aio.h
+  - prefixed usb functions with f2a_ to enforce code conventions and suppress
+    confusion with official libusb functions.
+  - more doc for functions internals
+  - created some function header (see f2a_info() for an example)
++ Tweaked f2a_need_usb_reset so that kernel info is not printed for each call
++ Updated binware/Notes.txt
++ Tweaked USB timeouts. They are now global (f2a_usb_timeout) so that routines
+can tweak to their needs (see f2a_info() for an example). Default timeout is set
+by USB_TIMEOUT define.
+
+^^^^^^^^^^^^^^
+Tag if2a-0_92b
+--------------
+
+16/03/05 and before (Spooo)
+---------------------------
++ corrected some bugs (particularly f2a_burn)
++ corrected another usb problem for linux-2.4 (introduced by win32)
++ reworked a bit file inclusions (and re-added libf2a.h which is now the only
+one included by if2a.c) + renamed lots of variables
++ moved initialization of global variables in f2a_reinit() function
++ added internal ntoh16/ntoh32 (replace standard ntohs/ntohl but available in
+separate libraries) + added rom map burn & load (test only, option -p in if2a)
++ version 0.93-pre0
+(tagged if2a-0_93pre0)
+
+22/05/05 and before (Spooo)
+---------------------------
++ finished rom map managnement (options -A, -X and -p)
+
+07/06/05 and before (Spooo)
+---------------------------
++ ability to replace loader (-L -A -X)
++ faqwto.sgml
++ tagged (if2a-0_94) cvs version and release to the wild world
+
+13/06/05 and before (Spooo)
+---------------------------
++ corrected bug in print_array_dual()
++ modified few forgotten f2a msg usb command for little endian (OSX/ppc)
++ sudo section in faqwto
++ tagged if2a-0_94_1
++ Vince : CVS now on grotte.homelinux.net:80/home/cvs/f2a. Anonymous access
+available on :pserver:anonymous@grotte.homelinux.net:80/home/cvs/f2a.
++ Vince : corrected typos on website.
+
+26/06/05 (Vince)
+----------------
++ Wrote Python replacement for LogAnalyze/LogPurify
