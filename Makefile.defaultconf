@@ -29,7 +29,7 @@ EFALINKER	= 0
 #LINKDEBUG	= ccmalloc
 
 # static linking is good for distributed binaries
-STATIC	 	= 1
+STATIC	 	= 0
 
 ### libusb search path 
 #win32
@@ -39,6 +39,7 @@ LIBUSBPATH_WIN32	?= ./libusb-win32-bin-0.1.8.0
 LIBUSBPATH_OSX		?= ./libusb-0.1.10a
 # other unices
 LIBUSBPATH_UNIX 	?= ./libusb-0.1.10a
+#LIBUSBPATH_UNIX 	?= /usr/include/libusb-1.0
 
 # some flags
 CFLAGS		+= -O0 -g -Wall -Wextra

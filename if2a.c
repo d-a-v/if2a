@@ -587,6 +587,14 @@ int main(int argc, char *argv[])
 			cart_exit(1);
 		}
 	}
+	
+	if (   cart_rom_block_size_log2 <= 0
+	    || cart_size_mbits <= 0
+	    || cart_write_block_size_log2 <= 0)
+	{
+		printerr("bad parameters (romblocksizelog2=%i, writeblocksizelog2=%i, cartsizembits=%i)\n", cart_rom_block_size_log2, cart_write_block_size_log2, cart_size_mbits);
+		cart_exit(1);
+	}
 
 	/* 
 	 * To allow for enumerating loaders without being connected, we must

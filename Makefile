@@ -23,6 +23,9 @@ endif
 hostmachine=$(shell uname -m)
 hostkernel=$(shell uname -s)
 
+USBH	=	usb.h
+#USBH	=	libusb.h
+
 #-----------------------
 # native win32 environment autodetection
 ifneq ($(COMSPEC),)
@@ -96,10 +99,10 @@ $(warning Checking libusb in LIBUSBPATH=$(LIBUSBPATH))
 endif
 
 ifeq ($(LIBUSBINCL),)
-LIBUSBINCL=$(shell for i in . include; do if [ -f $(LIBUSBPATH)/$$i/usb.h ]; then echo $(LIBUSBPATH)/$$i; break; fi; done)
+LIBUSBINCL=$(shell for i in . include; do if [ -f $(LIBUSBPATH)/$$i/$(USBH) ]; then echo $(LIBUSBPATH)/$$i; break; fi; done)
 ifneq ($(LIBUSBINCL),)
 ifneq ($(quiet),1)
-$(warning .	found libusb include files in '$(LIBUSBINCL)/usb.h')
+$(warning .	found libusb include files in '$(LIBUSBINCL)/$(USBH)')
 endif
 endif
 endif
@@ -116,8 +119,8 @@ endif
 endif # libusbpath
 
 ifneq ($(LIBUSBINCL),)
-ifneq ($(shell test -f $(LIBUSBINCL)/usb.h; echo $$?),0)
-$(warning '$(LIBUSBINCL)/usb.h' not found)
+ifneq ($(shell test -f $(LIBUSBINCL)/$(USBH); echo $$?),0)
+$(warning '$(LIBUSBINCL)/$(USBH)' not found)
 endif
 CFLAGS		+= -I$(LIBUSBINCL)
 endif

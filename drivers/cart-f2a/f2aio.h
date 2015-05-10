@@ -16,7 +16,7 @@
 /* default values are needed in case autodection is not used,
  * 18(256KB) is the most compatible value
  */
-#define DEFAULT_ROMBLOCKSIZE_LOG2	17
+#define DEFAULT_ROMBLOCKSIZE_LOG2	15
 #define DEFAULT_WRITEBLOCKSIZE_LOG2	18
 
 #define CMD_GETINF		0x05		// get info on the system status

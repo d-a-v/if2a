@@ -16,6 +16,8 @@
 #include "cartrom.h"
 #include "cartutils.h"
 
+#include "drivers/cart-f2a/f2aio.h" // DEFAULT_ROMBLOCKSIZE_LOG2
+
 // defined by binware.c
 extern binware_s binware_f2a_loader_pro [];
 extern binware_s binware_f2a_loader_ultra [];
@@ -51,8 +53,8 @@ void cart_init (void)
 	cart_verbose = 0;
 
 	cart_size_mbits = -1;			/* autodetect, see cart_get_type() */
-	cart_write_block_size_log2 = -1;	/* autodetect, see cart_get_type() */
-	cart_rom_block_size_log2 = -1;		/* autodetect, see cart_get_type() */
+	cart_write_block_size_log2 = DEFAULT_WRITEBLOCKSIZE_LOG2;
+	cart_rom_block_size_log2 = DEFAULT_ROMBLOCKSIZE_LOG2;
 	cart_thorough_compare = 0;
 }
 

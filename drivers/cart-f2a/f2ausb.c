@@ -85,11 +85,11 @@ static int f2a_boot (binware_s* multiboot, binware_s* splash, int usb_timeout_in
 	 * Give time to GBA to copy background image to VRAM, we would otherwise
 	 * experience info request failures whereas boot had been reported to be 
 	 * have occurred fine.
-     * This is also important for auto-detection as boot may have occured fine
-     * but autodetection will fail because the image is not entirely copied to
-     * VRAM.
+	 * This is also important for auto-detection as boot may have occured fine
+	 * but autodetection will fail because the image is not entirely copied to
+	 * VRAM.
 	 */
-	sleep(0.5);
+	usleep(500000);
 
 	return 0;
 }
@@ -176,9 +176,7 @@ static int f2a_usb_linker_init (void)
 		}
 		else // problem
 		{
-			print("Linker not ready to accept commands. "
-			      "Retrying.\n");
-			//msleep(500);
+			usleep(500000);
 			if (++problem_counter == 5)
 			{
 				printerr("There was a problem querying the "
@@ -186,6 +184,8 @@ static int f2a_usb_linker_init (void)
 					 "retry.\n");
 				return -1;
 			}
+			print("Linker not ready to accept commands. "
+			      "Retrying.\n");
 		}
 	}
     
