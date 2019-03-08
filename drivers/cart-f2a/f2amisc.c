@@ -41,10 +41,10 @@ int conv_f2apro_bank (const char* bank, int* offset, int* size)
     else
         *size = 1 << 16;
 
-	if (cart_verbose && bank[0])
-		print("Bank '%s' is SRAM is (offset=0x%x/%ibytes size=0x%x/%ibytes)\n",
-		bank, *offset, *offset, *size, *size);
-	return 0;
+    if (cart_verbose && bank[0])
+        print("Bank '%s' is SRAM is (offset=0x%x/%ibytes size=0x%x/%ibytes)\n",
+	      bank, *offset, *offset, *size, *size);
+    return 0;
 }
 
 int select_f2a_loader (cart_type_e cart_type, const char* loader_file)
