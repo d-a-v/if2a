@@ -338,7 +338,7 @@ const char* romname (const unsigned char* rom)
 	for (len = 0; len < 12; len++)
 		name[len] = ASCII((char)rom[0xa0 + len]);
 	for (len--; len>=0 && (name[len]==32 || name[len]=='.'); len--);
-		name[len+1] = 0;
+	name[len+1] = 0;
 	return name;
 }
 

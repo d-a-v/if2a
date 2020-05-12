@@ -66,7 +66,7 @@ int main (int argc, char* argv[])
 	FILE* f;
 	FILE* fc;
 	FILE* fh;
-	char fcname[LEN], fhname[LEN], temp[LEN], decl[BIGLEN];
+	char fcname[LEN], fhname[LEN], temp[BIGLEN], decl[BIGLEN];
 	char* filename;
 	char* headername;
 	off_t size, i;
@@ -228,7 +228,7 @@ int main (int argc, char* argv[])
 			free(buf);
 		}
 		
-		snprintf(temp, LEN, "\t{ \"%s\", %s, %s },\n", binname, defnamelen, defname);
+		snprintf(temp, BIGLEN, "\t{ \"%s\", %s, %s },\n", binname, defnamelen, defname);
 		strcat(decl, temp);
 	}
 	fprintf(fc, "%s\t{ NULL, 0, NULL }\n};\n\n", decl);

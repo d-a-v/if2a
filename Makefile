@@ -250,7 +250,9 @@ rawc-multi.o: rawc-multi.c
 B		= binware
 BINWARE		= $(B).c $(B).h
 
-$(BINWARE): rawc-multi$(HOSTEXT) binware/*.hex binware/*.gba binware/*.mb binware/*.img
+$(B).c: Makefile $(B).h
+
+$(B).h: Makefile rawc-multi$(HOSTEXT) binware/*.hex binware/*.gba binware/*.mb binware/*.img
 	@echo "Building $(B)..."
 	@rm -f $(BINWARE)
 ifeq ($(POGO),1)
