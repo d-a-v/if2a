@@ -197,7 +197,7 @@ typedef struct
 	unsigned char	start_code4;			// B instruction
 	unsigned char	logo[0xA0-0x04];		// logo data
 	char		title[0xC];			// game title name
-	unsigned long	game_code;			//
+	u_int32_t	game_code;			//
 	unsigned char	maker_code1;			//
 	unsigned char	maker_code2;			//
 	unsigned char	fixed;				// 0x96
@@ -207,7 +207,7 @@ typedef struct
 	unsigned char	game_version;			// 0x00
 	unsigned char	complement;			// 800000A0..800000BC
 	u_int16_t	checksum;			// 0x0000
-} rom_header_s;
+} __attribute__ ((packed)) rom_header_s;
 
 // data got from devkitpro project (devkitpro.org),
 // subproject buildscripts, file tools/gba/gbafix.c
